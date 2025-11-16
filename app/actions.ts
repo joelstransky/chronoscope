@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { addPerson } from "@/lib/data-store";
-import type { PersonData } from "@/types/timeline";
+import { addEventToPerson, addPerson } from "@/lib/data-store";
+import type { HistoricalEvent, PersonData } from "@/types/timeline";
 
 export async function createPerson(formData: FormData) {
   const name = formData.get("name") as string;
@@ -20,5 +20,22 @@ export async function createPerson(formData: FormData) {
   };
 
   addPerson(newPerson);
+  revalidatePath("/");
+}
+
+export async function createEvent(formData: FormData) {
+  const personId = formData.get("personId") as string;
+  const title = formData.get("title") as string;
+  const date = formData.get("date") as string;
+  const description = formData.get("description") as string;
+
+  const newEvent: HistoricalEvent = {
+    id: title.toLowerCase().replace(/\s+/g, "-"),
+    title,
+    date: new Date(date),
+    description,
+  };
+
+  addEventToPerson(personId, newEvent);
   revalidatePath("/");
 }

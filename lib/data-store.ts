@@ -27,3 +27,14 @@ export function addPerson(person: PersonData): void {
 export function resetData(): void {
   people = [...samplePersons];
 }
+
+import type { HistoricalEvent } from '@/types/timeline';
+
+export function addEventToPerson(personId: string, event: HistoricalEvent): boolean {
+  const person = getPersonById(personId);
+  if (person) {
+    person.events.push(event);
+    return true;
+  }
+  return false;
+}

@@ -1,9 +1,11 @@
 import type { PersonData } from "@/types/timeline";
+import AddEventModal from "./AddEventModal";
 import EventCard from "./EventCard";
 
 export type PersonProps = PersonData;
 
 export default function Person({
+  id,
   name,
   birthDate,
   deathDate,
@@ -17,6 +19,7 @@ export default function Person({
         <p>{birthDate?.toLocaleDateString()}</p>
         <p>{deathDate?.toLocaleDateString()}</p>
         <p>{description}</p>
+        <AddEventModal personId={id} />
       </div>
       <div className="overflow-x-auto py-4">
         <div className="flex flex-row gap-4">
