@@ -1,4 +1,5 @@
 import { Newsreader } from "next/font/google";
+import ShareButton from "@/components/ShareButton";
 import CreatePersonForm from "@/components/timeline/CreatePersonForm";
 import Person from "@/components/timeline/Person";
 import { getAllPeople, getPersonsByIds } from "@/lib/data-store";
@@ -21,16 +22,17 @@ export default async function HomePage(props: {
   return (
     <main className="min-h-screen p-8">
       <h1 className={newsreader.className}>Chronoscope</h1>
+      <ShareButton />
       <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4">
         <div>
           <CreatePersonForm />
         </div>
         <div className="col-span-1 overflow-x-auto">
-            {people.map((person) => (
-              <Person key={person.id} {...person} />
-            ))}
-          </div>
+          {people.map((person) => (
+            <Person key={person.id} {...person} />
+          ))}
         </div>
-      </main>
-    );
-  }
+      </div>
+    </main>
+  );
+}
