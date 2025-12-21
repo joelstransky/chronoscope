@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { PersonSchema } from "@/lib/schemas";
 import prisma from "../lib/db"; // Import the Prisma client
 
 /**
@@ -8,22 +9,28 @@ import prisma from "../lib/db"; // Import the Prisma client
  * @param formData The form data containing person details.
  */
 export async function createPerson(formData: FormData) {
-  const name = formData.get("name") as string;
-  const birthDateStr = formData.get("birthDate") as string;
-  const deathDateStr = formData.get("deathDate") as string;
-  const description = formData.get("description") as string;
+  const rawData = {
+    name: formData.get("name"),
+    birthDate: formData.get("birthDate"),
+    deathDate: formData.get("deathDate") || undefined, // Handle empty string as undefined
+    description: formData.get("description") || undefined,
+  };
+
+  // Validate data using Zod schema
+  const validatedData = PersonSchema.parse(rawData);
 
   // Convert date strings to Date objects or null if empty
-  const birthDate = birthDateStr ? new Date(birthDateStr) : ""; 
-  const deathDate = deathDateStr ? new Date(deathDateStr)
-  : null;
+  const birthDate = new Date(validatedData.birthDate);
+  const deathDate = validatedData.deathDate
+    ? new Date(validatedData.deathDate)
+    : null;
 
   await prisma.person.create({
     data: {
-      name,
+      name: validatedData.name,
       birthDate,
       deathDate,
-      description,
+      description: validatedData.description,
     },
   });
 
@@ -69,7 +76,7 @@ export async function createEvent(formData: FormData) {
  * @returns A promise that resolves to an array of Person objects.
  */
 export async function searchPeople(query: string) {
-  if (!query || query.trim() === '') {
+  if (!query || query.trim() === "") {
     return []; // Return empty array if query is empty
   }
 
@@ -79,19 +86,19 @@ export async function searchPeople(query: string) {
     where: {
       name: {
         contains: query.trim(), // Search for the query string within the name
-        mode: 'insensitive',    // Perform a case-insensitive search
+        mode: "insensitive", // Perform a case-insensitive search
       },
     },
     take: 10, // Limit the number of results
-    select: { // Select specific fields to return, matching PersonData structure excluding events
+    select: {
+      // Select specific fields to return, matching PersonData structure excluding events
       id: true,
       name: true,
       birthDate: true,
       deathDate: true,
       description: true,
-    }
+    },
   });
 
   return people;
 }
-
