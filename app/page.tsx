@@ -16,9 +16,12 @@ export default async function HomePage(props: {
   // Next.js calls this function and passes the props
   const params = await props.searchParams;
   const peopleParam = params.people;
+
+  // TODO: Update this logic to return an empty array [] if peopleParam is missing.
+  // Currently, it falls back to getAllPeople(), which populates the canvas with everyone.
   const people = await (peopleParam
     ? getPersonsByIds(peopleParam.split(","))
-    : getAllPeople());
+    : Promise.resolve([]));
 
   return (
     <main className="min-h-screen p-8">
@@ -30,6 +33,7 @@ export default async function HomePage(props: {
           <CreatePersonForm />
         </div>
         <div className="col-span-1 overflow-x-auto">
+          {/* TODO: Implement a "Welcome" or "Empty State" UI when people.length === 0 */}
           {people.map((person) => (
             <Person key={person.id} {...person} />
           ))}

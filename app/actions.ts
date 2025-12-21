@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { PersonSchema, EventSchema } from "@/lib/schemas";
+import type { Person } from "@/lib/generated/prisma";
+import { EventSchema, PersonSchema } from "@/lib/schemas";
 import prisma from "../lib/db"; // Import the Prisma client
 
 /**
@@ -87,7 +88,7 @@ export async function searchPeople(query: string) {
 
   // Use Prisma to find people whose names contain the query string, case-insensitive.
   // Limits the results to 10 for performance and UI manageability.
-  const people = await prisma.person.findMany({
+  const people: Person[] = await prisma.person.findMany({
     where: {
       name: {
         contains: query.trim(), // Search for the query string within the name
@@ -102,6 +103,8 @@ export async function searchPeople(query: string) {
       birthDate: true,
       deathDate: true,
       description: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
 

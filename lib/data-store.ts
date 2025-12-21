@@ -1,28 +1,29 @@
 // lib/data-store.ts
 // This file now acts as a data retrieval layer using Prisma.
 import prisma from "./db"; // Import the Prisma client
-import type { Person, Event } from './generated/prisma'; // Import Prisma's generated types
+import type { Event, Person } from "./generated/prisma"; // Import Prisma's generated types
 
-// PersonData type from types/timeline.ts may not be fully compatible
-// with Prisma's generated Person type (especially events array).
-// For simplicity, we will return Prisma's Person & { events: Event[] } here.
-// Downstream components consuming this data might need to adapt or
-// we can introduce a mapper function if the type mismatch causes issues.
+// TODO: Cleanup this file by removing any remaining in-memory logic or unused helper functions.
+// Ensure it provides a clean API for the Server Components to fetch data.
 
-export async function getAllPeople(): Promise<(Person & { events: Event[] })[]> {
+export async function getAllPeople(): Promise<
+  (Person & { events: Event[] })[]
+> {
   // Fetch all people from the database, including their events
   const people = await prisma.person.findMany({
     include: {
       events: true, // Include related events
     },
     orderBy: {
-      name: 'asc', // Order by name for consistent display
+      name: "asc", // Order by name for consistent display
     },
   });
   return people;
 }
 
-export async function getPersonById(id: string): Promise<(Person & { events: Event[] }) | null> {
+export async function getPersonById(
+  id: string,
+): Promise<(Person & { events: Event[] }) | null> {
   // Fetch a single person by ID from the database, including their events
   const person = await prisma.person.findUnique({
     where: { id },
@@ -33,7 +34,9 @@ export async function getPersonById(id: string): Promise<(Person & { events: Eve
   return person;
 }
 
-export async function getPersonsByIds(ids: string[]): Promise<(Person & { events: Event[] })[]> {
+export async function getPersonsByIds(
+  ids: string[],
+): Promise<(Person & { events: Event[] })[]> {
   if (ids.length === 0) {
     return [];
   }
@@ -48,7 +51,7 @@ export async function getPersonsByIds(ids: string[]): Promise<(Person & { events
       events: true, // Include related events
     },
     orderBy: {
-      name: 'asc',
+      name: "asc",
     },
   });
   return people;
