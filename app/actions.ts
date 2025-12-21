@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { PersonSchema } from "@/lib/schemas";
+import { PersonSchema, EventSchema } from "@/lib/schemas";
 import prisma from "../lib/db"; // Import the Prisma client
 
 /**
@@ -43,23 +43,28 @@ export async function createPerson(formData: FormData) {
  * @param formData The form data containing event details and the person's ID.
  */
 export async function createEvent(formData: FormData) {
-  const personId = formData.get("personId") as string;
-  const title = formData.get("title") as string;
-  const dateStr = formData.get("date") as string;
-  const description = formData.get("description") as string;
+  const rawData = {
+    personId: formData.get("personId"),
+    title: formData.get("title"),
+    date: formData.get("date"),
+    description: formData.get("description") || undefined,
+  };
+
+  // Validate data using Zod schema
+  const validatedData = EventSchema.parse(rawData);
 
   // Convert date string to Date object
-  const date = new Date(dateStr);
+  const date = new Date(validatedData.date);
 
   await prisma.event.create({
     data: {
-      title,
+      title: validatedData.title,
       date,
-      description,
+      description: validatedData.description,
       // Connect the event to the person using their ID
       person: {
         connect: {
-          id: personId,
+          id: validatedData.personId,
         },
       },
     },
