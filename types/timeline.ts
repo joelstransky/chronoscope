@@ -3,7 +3,7 @@
 export type HistoricalEvent = {
   id: string;
   title: string;
-  description?: string;
+  description: string | null;
   date: Date;
   // We'll add more fields later (dateEnd, uncertainty, etc.)
 };
@@ -11,14 +11,8 @@ export type HistoricalEvent = {
 export type PersonData = {
   id: string;
   name: string;
-  birthDate?: Date;
-  deathDate?: Date;
-  description?: string;
+  birthDate: Date;
+  deathDate: Date | null;
+  description: string | null;
   events: HistoricalEvent[];
-};
-
-export type Canvas = {
-  id: string;
-  personIds: string[];
-  // We'll add zoom level, date range, etc. later
 };

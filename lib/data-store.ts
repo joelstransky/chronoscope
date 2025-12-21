@@ -1,40 +1,59 @@
 // lib/data-store.ts
-import type { PersonData } from '@/types/timeline';
-import { samplePersons } from './sample-data';
+// This file now acts as a data retrieval layer using Prisma.
+import prisma from "./db"; // Import the Prisma client
+import type { Person, Event } from './generated/prisma'; // Import Prisma's generated types
 
-// In-memory store (resets on server restart - we'll use DB later)
-let people: PersonData[] = [...samplePersons];
+// PersonData type from types/timeline.ts may not be fully compatible
+// with Prisma's generated Person type (especially events array).
+// For simplicity, we will return Prisma's Person & { events: Event[] } here.
+// Downstream components consuming this data might need to adapt or
+// we can introduce a mapper function if the type mismatch causes issues.
 
-export function getAllPeople(): PersonData[] {
+export async function getAllPeople(): Promise<(Person & { events: Event[] })[]> {
+  // Fetch all people from the database, including their events
+  const people = await prisma.person.findMany({
+    include: {
+      events: true, // Include related events
+    },
+    orderBy: {
+      name: 'asc', // Order by name for consistent display
+    },
+  });
   return people;
 }
 
-export function getPersonById(id: string): PersonData | undefined {
-  return people.find(p => p.id === id);
+export async function getPersonById(id: string): Promise<(Person & { events: Event[] }) | null> {
+  // Fetch a single person by ID from the database, including their events
+  const person = await prisma.person.findUnique({
+    where: { id },
+    include: {
+      events: true, // Include related events
+    },
+  });
+  return person;
 }
 
-export function getPersonsByIds(ids: string[]): PersonData[] {
-  return ids
-    .map(id => getPersonById(id))
-    .filter((person): person is PersonData => person !== undefined);
-}
-
-export function addPerson(person: PersonData): void {
-  people.push(person);
-}
-
-// For testing - reset to original data
-export function resetData(): void {
-  people = [...samplePersons];
-}
-
-import type { HistoricalEvent } from '@/types/timeline';
-
-export function addEventToPerson(personId: string, event: HistoricalEvent): boolean {
-  const person = getPersonById(personId);
-  if (person) {
-    person.events.push(event);
-    return true;
+export async function getPersonsByIds(ids: string[]): Promise<(Person & { events: Event[] })[]> {
+  if (ids.length === 0) {
+    return [];
   }
-  return false;
+  // Fetch multiple people by their IDs from the database, including their events
+  const people = await prisma.person.findMany({
+    where: {
+      id: {
+        in: ids,
+      },
+    },
+    include: {
+      events: true, // Include related events
+    },
+    orderBy: {
+      name: 'asc',
+    },
+  });
+  return people;
 }
+
+// The following functions and in-memory store have been removed:
+// - addPerson, addEventToPerson (now handled by app/actions.ts using Prisma)
+// - resetData, samplePersons (were for in-memory store)

@@ -1,0 +1,118 @@
+Chronoscope Project - Lesson Plan Summary
+Project Overview
+Building Chronoscope, a web app for viewing and collaboratively creating timelines of historical events. Users can create "persons" and add events to them, with the ability to view multiple timelines side-by-side on a canvas.
+Tech Stack
+
+Next.js 15 (App Router)
+React 19 with React Compiler
+TypeScript
+Tailwind CSS
+Prisma ORM
+Neon PostgreSQL
+Radix UI (Dialog component)
+pnpm package manager
+Deployed on Vercel
+
+Learning Philosophy
+Incremental building - adding one concept at a time, with the student implementing code themselves rather than receiving complete solutions. Focus on understanding modern React/Next.js patterns encountered in daily professional work.
+Completed Phases
+Phase 1: Foundation ✅
+
+Next.js 15 setup with App Router
+TypeScript configuration
+Basic data types (PersonData, HistoricalEvent, Canvas)
+Simple timeline component with horizontal scrolling
+Server Components basics
+
+Phase 2: Multiple People on Canvas ✅
+
+URL-based state (searchParams)
+Displaying multiple people stacked vertically
+Each person with their own horizontal event timeline
+Understanding async props in Next.js 15
+
+Phase 3: Creating People (CRUD Part 1) ✅
+
+Server Actions introduction
+Client vs Server Components distinction
+Form handling without API routes
+revalidatePath() for cache invalidation
+In-memory data store (temporary)
+
+Phase 4: Adding Events via Modal ✅
+
+Radix UI Dialog component
+Modal pattern (similar to X/Bluesky)
+Scoped actions (adding events to specific people)
+Hidden form inputs for passing context
+Client-side state management with useState
+
+Phase 5a: Share Button ✅
+
+Clipboard API usage
+Client-side URL manipulation
+User feedback patterns (temporary "Copied!" state)
+
+Phase 6: Database Integration ✅
+
+Neon PostgreSQL setup
+Prisma ORM implementation
+Schema design (Person and Event models with relationships)
+Replaced in-memory store with real database
+Prisma Client usage in Server Actions
+Prisma Studio for database visualization
+
+Current Status
+Just completed: Database integration is fully working. Users can create people and events through forms, data persists in Neon PostgreSQL, and everything displays correctly on the timeline.
+Outstanding Tasks & Next Steps
+Phase 5b: Canvas State + URL Sync (Deferred)
+Not yet implemented - Added to backlog:
+
+Client-side canvas state management
+Syncing which people are visible with URL parameters
+Add/remove people from canvas dynamically
+Browser back/forward button support
+
+Phase 7: Search Functionality (Next Priority)
+Ready to implement:
+
+Search UI component for finding existing people
+Filter/query capability across all people in database
+Click to add person to canvas
+Integration with canvas state management
+
+Phase 8+: Future Enhancements (Planned)
+
+Form validation library (React Hook Form + Zod)
+Timestamp precision for events (down to minute level)
+Better ID generation (currently using simple slug generation)
+Drag & drop for reordering events
+Real-time collaboration features
+Advanced styling and animations
+Delete functionality for people/events
+Edit functionality
+Mobile responsiveness improvements
+
+Key Concepts Covered
+
+Server Components vs Client Components
+Server Actions for form handling
+Next.js App Router patterns
+Async props and searchParams
+Prisma ORM and database relationships
+Type safety with TypeScript and Prisma
+Modern form patterns without traditional API routes
+Modal dialogs with accessibility (Radix UI)
+URL state management
+
+Design Decisions Made
+
+Dark theme with blue accents
+Dashboard layout: sidebar (300px) with forms, main area for timelines
+Each person component has inline "+ Add Event" button (not global dropdown)
+Using Neon instead of local SQLite for consistency between dev and production
+No tRPC needed (Server Actions provide type safety)
+Building components from scratch rather than heavy shadcn usage
+
+Next Immediate Step
+Implement search functionality to allow users to find and add existing people to their canvas view.
