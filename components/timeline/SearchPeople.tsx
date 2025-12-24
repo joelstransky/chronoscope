@@ -1,19 +1,21 @@
 // components/timeline/SearchPeople.tsx
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
+import { useEffect, useState, useTransition } from "react";
 import { searchPeople } from "@/app/actions";
 import type { Person } from "@/lib/generated/prisma";
 
 export function SearchPeople() {
+  const [people, setPeople] = useQueryState(
+    "people",
+    parseAsArrayOf(parseAsString).withDefault([]),
+  );
   const [query, setQuery] = useState("");
   // TODO: Define or import a specific SearchResult type if Person is too broad
   const [results, setResults] = useState<Person[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
 
   // Scaffold: Debounced search effect
   useEffect(() => {
@@ -38,8 +40,12 @@ export function SearchPeople() {
   const addPersonToCanvas = (id: string) => {
     // TODO: Implement URL state update logic to add people to canvas
     // 1. Get current 'people' param from searchParams
+    if (people.includes(id)) return;
     // 2. Append the new ID (avoiding duplicates)
     // 3. Use router.push() to update the URL with the new list
+    startTransition(() => {
+      setPeople([...people, id], { shallow: false });
+    });
   };
 
   return (
@@ -62,18 +68,25 @@ export function SearchPeople() {
         {/* Each result should have an "Add" button that calls addPersonToCanvas(result.id) */}
         {results.length > 0 && (
           <ul>
-            {results.map((result) => (
-              <li key={result.id} className="flex justify-between items-center">
-                <span>{result.name}</span>
-                <button
-                  type="button"
-                  onClick={() => addPersonToCanvas(result.id)}
-                  className="text-blue-500 hover:text-blue-400 text-sm"
+            {results.map((result) => {
+              const included = people.includes(result.id);
+              return (
+                <li
+                  key={result.id}
+                  className="flex justify-between items-center"
                 >
-                  Add
-                </button>
-              </li>
-            ))}
+                  <span>{result.name}</span>
+                  <button
+                    type="button"
+                    disabled={included}
+                    onClick={() => addPersonToCanvas(result.id)}
+                    className="text-blue-500 hover:text-blue-400 text-sm py-[5px] px-[9px] border border-blue-500 rounded-full"
+                  >
+                    {included ? "added" : "Add"}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>

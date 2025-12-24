@@ -27,9 +27,11 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "nuqs": "^2.8.5",
     "prisma": "^6.19.0",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
     "typescript": "^5"
-  }
+  },
+  "packageManager": "pnpm@10.26.1+sha256.e8e6e499128f6804f5c92223cd1f2e3f62557102c0c6e254cc99bb2aa229bbf9"
 }
