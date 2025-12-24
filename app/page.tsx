@@ -6,6 +6,7 @@ import CreatePersonForm from "@/components/timeline/CreatePersonForm";
 import Person from "@/components/timeline/Person";
 import { SearchPeople } from "@/components/timeline/SearchPeople";
 import { getPersonsByIds } from "@/lib/data-store";
+import { SearchParamsSchema } from "@/lib/schemas";
 import { loadSearchParams } from "./searchParams";
 
 const newsreader = Newsreader({
@@ -16,13 +17,16 @@ export default async function HomePage(props: {
   searchParams: Promise<SearchParams>;
 }) {
   const { searchParams } = props;
-  const { people } = await loadSearchParams(searchParams);
+  const params = await loadSearchParams(searchParams);
+  // Validate the search parameters using Zod
+  const validated = SearchParamsSchema.safeParse(params);
+  const peopleIds = validated.success ? validated.data.people : [];
 
-  // If peopleParam is missing, we return an empty array to show an empty canvas.
-  const persons = await (people.length
-    ? getPersonsByIds(people)
+  // If peopleParam is missing or invalid, we return an empty array to show an empty canvas.
+  const persons = await (peopleIds.length
+    ? getPersonsByIds(peopleIds)
     : Promise.resolve([]));
-  console.log("persons", persons);
+
   return (
     <main className="min-h-screen p-8">
       <h1 className={newsreader.className}>Chronoscope</h1>

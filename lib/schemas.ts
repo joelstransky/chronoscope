@@ -26,3 +26,9 @@ export const EventSchema = z.object({
 });
 
 export type EventFormData = z.infer<typeof EventSchema>;
+
+export const SearchParamsSchema = z.object({
+  people: z.array(z.string()).default([]),
+});
+
+export type SearchParamsData = z.infer<typeof SearchParamsSchema>;
