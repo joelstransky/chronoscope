@@ -39,10 +39,18 @@ export default async function HomePage(props: {
           <CreatePersonForm />
         </div>
         <div className="col-span-1 overflow-x-auto">
-          {/* TODO: Implement a "Welcome" or "Empty State" UI when people.length === 0 */}
-          {persons.map((person) => (
-            <Person key={person.id} {...person} />
-          ))}
+          {persons.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-gray-700 rounded-lg text-gray-400">
+              {/* TODO: Implement a "Welcome" or "Empty State" UI */}
+              <p className="text-lg">No people selected</p>
+              <p className="text-sm">
+                Search for a historical figure on the left to begin your
+                timeline.
+              </p>
+            </div>
+          ) : (
+            persons.map((person) => <Person key={person.id} {...person} />)
+          )}
         </div>
       </div>
     </main>

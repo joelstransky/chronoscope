@@ -19,4 +19,3 @@ export default function EventCard({ event }: EventCardProps) {
     </div>
   );
 }
-

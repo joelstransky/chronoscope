@@ -63,6 +63,10 @@ export function SearchPeople() {
         <p className="text-sm text-gray-400 mt-2">Searching...</p>
       )}
 
+      {isPending && (
+        <p className="text-sm text-blue-400 mt-2">Updating canvas...</p>
+      )}
+
       <div className="mt-4 space-y-2">
         {/* TODO: Map over 'results' and render them here. */}
         {/* Each result should have an "Add" button that calls addPersonToCanvas(result.id) */}

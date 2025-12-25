@@ -1,12 +1,12 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as Dialog from "@radix-ui/react-dialog";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { createEvent } from "@/app/actions";
-import { EventSchema, type EventFormData } from "@/lib/schemas";
+import { type EventFormData, EventSchema } from "@/lib/schemas";
 
 type AddEventModalProps = {
   personId: string;
