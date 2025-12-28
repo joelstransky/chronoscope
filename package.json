@@ -20,7 +20,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
-    "@prisma/client": "^6.19.0",
+    "@clerk/nextjs": "^6.36.5",
+    "@prisma/client": "6.19.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
