@@ -15,12 +15,19 @@ const newsreader = Newsreader({
 
 export default async function HomePage(props: {
   searchParams: Promise<SearchParams>;
+  slugPeople: string[] | undefined
 }) {
-  const { searchParams } = props;
-  const params = await loadSearchParams(searchParams);
-  // Validate the search parameters using Zod
-  const validated = SearchParamsSchema.safeParse(params);
-  const peopleIds = validated.success ? validated.data.people : [];
+  const { searchParams, slugPeople } = props;
+  let peopleIds: string[] | undefined;
+  if (!slugPeople) {
+
+    const params = await loadSearchParams(searchParams);
+    // Validate the search parameters using Zod
+    const validated = SearchParamsSchema.safeParse(params);
+    peopleIds = validated.success ? validated.data.people : [];
+  } else {
+    peopleIds = slugPeople
+  }
 
   // If peopleParam is missing or invalid, we return an empty array to show an empty canvas.
   const persons = await (peopleIds.length

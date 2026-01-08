@@ -1,7 +1,8 @@
 "use server";
 
+import { nanoid } from "nanoid";
 import { revalidatePath } from "next/cache";
-import type { Person } from "@/lib/generated/prisma";
+import type { Document, Person } from "@/lib/generated/prisma";
 import { EventSchema, PersonSchema } from "@/lib/schemas";
 import prisma from "../lib/db"; // Import the Prisma client
 
@@ -109,4 +110,47 @@ export async function searchPeople(query: string) {
   });
 
   return people;
+}
+
+/**
+ * Server Action to save a document snapshot (canvas state).
+ * Handles both anonymous and authenticated saves.
+ * @param personIds Array of person IDs currently on the canvas.
+ * @param userId Optional Clerk User ID.
+ * @returns The saved Document object.
+ */
+export async function saveDocument(personIds: string[], userId?: string) {
+  // TODO: Implement the save logic
+  // 1. Generate a unique slug using nanoid (e.g., 10 characters).
+  const slug = nanoid(10);
+  // 2. If userId is missing, generate a secret deleteToken (e.g., a longer nanoid).
+  const deleteToken = userId ? null : nanoid();
+  // 3. Create the Document in the database using prisma.document.create.
+  try {
+    const doc = await prisma.document.create({
+      data: {
+        slug,
+        personIds,
+        userId,
+        deleteToken,
+      },
+    });
+    // 4. Return the created document.
+    return doc;
+  } catch (e) {
+    // throw e;
+  }
+}
+
+export async function fetchDocument(slug: string) {
+  try {
+    const doc: Document | null = await prisma.document.findUnique({
+      where: {
+        slug: slug,
+      },
+    });
+    return doc;
+  } catch (e) {
+
+  }
 }
