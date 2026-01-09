@@ -32,7 +32,7 @@ export default async function SharedTimelinePage({
     <div>
       {/* This is a stub for the shared timeline loader */}
       <h1>Loading shared timeline: {slug}</h1>
-      {<HomePage searchParams={Promise.reject()} slugPeople={ids} />}
+      {<HomePage slugPeople={ids} />}
     </div>
   );
 }

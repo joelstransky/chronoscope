@@ -1,18 +1,17 @@
+// components/ShareButton.tsx
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 import { useState } from "react";
 import { saveDocument } from "@/app/actions";
 import ShareModal from "./timeline/ShareModal";
 
-export default function ShareButton() {
-  const { userId } = useAuth();
-  const [people] = useQueryState(
-    "people",
-    parseAsArrayOf(parseAsString).withDefault([]),
-  );
+type ShareButtonProps = {
+  people: string[];
+};
 
+export default function ShareButton({ people }: ShareButtonProps) {
+  const { userId } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [docData, setDocData] = useState<{
     slug: string;

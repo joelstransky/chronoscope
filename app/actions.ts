@@ -142,6 +142,17 @@ export async function saveDocument(personIds: string[], userId?: string) {
   }
 }
 
+import { getPersonsByIds as getPersonsByIdsStore } from "@/lib/data-store";
+
+/**
+ * Server Action to fetch multiple people by their IDs.
+ * @param ids Array of person IDs.
+ * @returns Array of Person objects with their events.
+ */
+export async function getPersonsByIds(ids: string[]) {
+  return await getPersonsByIdsStore(ids);
+}
+
 export async function fetchDocument(slug: string) {
   try {
     const doc: Document | null = await prisma.document.findUnique({

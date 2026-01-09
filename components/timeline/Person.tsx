@@ -1,11 +1,13 @@
+// components/timeline/Person.tsx
 "use client";
 
-import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 import type { PersonData } from "@/types/timeline";
 import AddEventModal from "./AddEventModal";
 import EventCard from "./EventCard";
 
-export type PersonProps = PersonData;
+export type PersonProps = PersonData & {
+  onRemove: (id: string) => void;
+};
 
 export default function Person({
   id,
@@ -14,24 +16,13 @@ export default function Person({
   deathDate,
   description,
   events,
+  onRemove,
 }: PersonProps) {
-  const [people, setPeople] = useQueryState(
-    "people",
-    parseAsArrayOf(parseAsString).withDefault([]),
-  );
-
-  const onRemove = () => {
-    setPeople(
-      people.filter((pid) => pid !== id),
-      { shallow: false },
-    );
-  };
-
   return (
     <div className="relative border border-gray-700 rounded-lg p-6 mb-8 bg-gray-900/50">
       <button
         type="button"
-        onClick={onRemove}
+        onClick={() => onRemove(id)}
         className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
         aria-label="Remove person details"
       >
