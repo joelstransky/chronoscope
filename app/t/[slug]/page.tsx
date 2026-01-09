@@ -28,11 +28,5 @@ export default async function SharedTimelinePage({
   const ids = doc?.personIds;
   // 4. Render the HomePage component, passing the personIds as a prop or via a modified searchParams mechanism.
 
-  return (
-    <div>
-      {/* This is a stub for the shared timeline loader */}
-      <h1>Loading shared timeline: {slug}</h1>
-      {<HomePage slugPeople={ids} />}
-    </div>
-  );
+  return <HomePage slugPeople={ids} />;
 }
